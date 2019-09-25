@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { createStyles, Theme, WithStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import { Route, Link as RouterLink } from 'react-router-dom';
 import { withRouter } from 'react-router';
@@ -19,18 +20,13 @@ import BookmarksPanel from './BookmarksPanel'
 import HomePanel from './Components/HomePanel'
 import BlogPanel from './Components/BlogPanel'
 
-import { blue, indigo } from '@material-ui/core/colors'
+//import { blue, indigo } from '@material-ui/core/colors'
 
 const drawerWidth = 240;
 
 const theme = createMuiTheme({
   palette: {
-    secondary: {
-      main: blue[900]
-    },
-    primary: {
-      main: indigo[700]
-    }
+    type: 'dark'
   },
   typography: {
     // Use the system font instead of the default Roboto font.
@@ -45,7 +41,7 @@ const theme = createMuiTheme({
 //const useStyles = makeStyles((theme: Theme) =>
 //  createStyles({
 
-const useStyles = theme => ({
+  const useStyles =( {spacing, palette,mixins} : Theme) => createStyles({
   root: {
     display: 'flex',
   },
@@ -60,18 +56,21 @@ const useStyles = theme => ({
   drawerPaper: {
     width: drawerWidth,
   },
-  toolbar: theme.mixins.toolbar,
+  toolbar: mixins.toolbar,
   title : {
     flexGrow : 1
   },
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing(3),
+    backgroundColor: palette.background.default,
+    padding: spacing(3),
   },
 });
 
-class App extends Component {
+interface AppProps extends WithStyles<typeof useStyles> {
+};
+
+class App extends Component< AppProps, {} > {
 
   state = {
     usertoken: "",
@@ -150,25 +149,25 @@ class App extends Component {
             <List>
               <ListItem button>
                 <ListItemIcon><HomeIcon /></ListItemIcon>
-                <Link component={RouterLink} to="/">
+                <Link color="textPrimary" component={RouterLink} to="/">
                   Home
                 </Link>
               </ListItem>
               <ListItem button >
                 <ListItemIcon><InboxIcon /></ListItemIcon>
-                <Link component={ RouterLink } to="/blog">
+                <Link color="textPrimary" component={ RouterLink } to="/blog">
                   Blog
                 </Link>
               </ListItem>
               <ListItem button>
                 <ListItemIcon><BookmarksIcon /></ListItemIcon>
-                <Link component={ RouterLink } to="/bookmarks">
+                <Link color="textPrimary" component={ RouterLink } to="/bookmarks">
                   Bookmarks
                 </Link>
               </ListItem>
               <ListItem button>
                 <ListItemIcon><SettingsIcon /></ListItemIcon>
-                <Link component={ RouterLink } to="/settings">
+                <Link color="textPrimary" component={ RouterLink } to="/settings">
                   Settings
                 </Link>
               </ListItem>
@@ -184,7 +183,6 @@ class App extends Component {
                     usertoken={ this.state.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)}/> }/>
             <Route path="/bookmarks" render={ (props) => < BookmarksPanel {...props} 
                     usertoken={ this.state.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)} /> }/>
-
           </main>
 
         </MuiThemeProvider>        
@@ -193,4 +191,4 @@ class App extends Component {
   }
 }
 
-export default withRouter( withStyles(useStyles)( App ) );
+export default withStyles(useStyles)( App );

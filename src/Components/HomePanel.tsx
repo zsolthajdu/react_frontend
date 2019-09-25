@@ -1,14 +1,23 @@
+
 import React, { Component } from 'react';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { createStyles, Theme, WithStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
+import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import LoginDlg from './LoginDlg';
 
 const drawerWidth = 240;
 
-const useStyles =( {spacing, palette,mixins} : Theme) => createStyles({
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark'
+  }
+});
+
+const useStyles =( theme: Theme) => createStyles({
   root: {
     display: 'flex',
   },
@@ -23,14 +32,14 @@ const useStyles =( {spacing, palette,mixins} : Theme) => createStyles({
   drawerPaper: {
     width: drawerWidth,
   },
-  toolbar: mixins.toolbar,
+  toolbar: theme.mixins.toolbar,
   title : {
     flexGrow : 1
   },
   content: {
     flexGrow: 1,
-    backgroundColor: palette.background.default,
-    padding: spacing(3),
+
+
   },
 });
 
@@ -47,7 +56,8 @@ class HomePanel extends Component< HomeProps, {} > {
 
     return(
       <div >
-        <AppBar position="fixed" className={classes.appBar}>
+        <MuiThemeProvider theme={theme}>
+        <AppBar position="fixed" color="inherit" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" noWrap  className={classes.title }>
               Home
@@ -56,9 +66,17 @@ class HomePanel extends Component< HomeProps, {} > {
           </Toolbar>
         </AppBar>
 
-        <Typography >
-          <h3>Welcome visitor.</h3>Please log in to access bookmark database.
-        </Typography>
+        <Paper >
+          <div>
+          <Typography variant="h5" component="h3">
+            Welcome visitor !
+          </Typography>
+          </div>
+          <Typography component="p">
+            Please log in to access the bookmarks database.
+          </Typography>
+        </Paper>
+        </MuiThemeProvider>
       </div>      
     )
   }
