@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { createStyles, Theme, WithStyles } from '@material-ui/core/styles';
+import { useTheme , withTheme } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -8,7 +10,7 @@ import LoginDlg from './LoginDlg';
 
 const drawerWidth = 240;
 
-const useStyles =( {spacing, palette,mixins} : Theme) => createStyles({
+const useStyles =( theme: Theme) => createStyles({
   root: {
     display: 'flex',
   },
@@ -23,14 +25,14 @@ const useStyles =( {spacing, palette,mixins} : Theme) => createStyles({
   drawerPaper: {
     width: drawerWidth,
   },
-  toolbar: mixins.toolbar,
+  toolbar: theme.mixins.toolbar,
   title : {
     flexGrow : 1
   },
   content: {
     flexGrow: 1,
-    backgroundColor: palette.background.default,
-    padding: spacing(3),
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing(3),
   },
 });
 
@@ -44,10 +46,9 @@ class BlogPanel extends Component< HomeProps, {} > {
 
   render() {
     const { classes } = this.props;
-
     return(
       <div >
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position="fixed" color="inherit" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" noWrap  className={classes.title }>
               Blog
@@ -64,5 +65,6 @@ class BlogPanel extends Component< HomeProps, {} > {
   }
 }
 
-export default withStyles(useStyles)( BlogPanel );
+//export default withTheme( BlogPanel );
+export default withStyles(useStyles)( BlogPanel);
 

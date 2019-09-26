@@ -168,7 +168,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
     return (
       <div >
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position="fixed" color="inherit" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" noWrap className={classes.title }>
               Bookmarks

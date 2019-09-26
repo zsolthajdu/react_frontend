@@ -68,7 +68,7 @@ class BookmarkList extends Component< BmListProps, {} > {
               <Grid item xs={6} >
                 <Tooltip title={description} placement="bottom-start">
                   <Typography>  
-                    <Link href={ url } className={classes.link}>{title}  </Link>
+                    <Link href={ url } color="textPrimary" className={classes.link}>{title}  </Link>
                   </Typography>
                 </Tooltip>
               </Grid>

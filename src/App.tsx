@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { withTheme } from '@material-ui/styles';
 import { createStyles, Theme, WithStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import { Route, Link as RouterLink } from 'react-router-dom';
-import { withRouter } from 'react-router';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import List from '@material-ui/core/List';
@@ -20,26 +19,7 @@ import BookmarksPanel from './BookmarksPanel'
 import HomePanel from './Components/HomePanel'
 import BlogPanel from './Components/BlogPanel'
 
-//import { blue, indigo } from '@material-ui/core/colors'
-
 const drawerWidth = 240;
-
-const theme = createMuiTheme({
-  palette: {
-    type: 'dark'
-  },
-  typography: {
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      '"Lato"',
-      'sans-serif'
-    ].join(',')
-  }
-});
-
-
-//const useStyles = makeStyles((theme: Theme) =>
-//  createStyles({
 
   const useStyles =( {spacing, palette,mixins} : Theme) => createStyles({
   root: {
@@ -133,7 +113,6 @@ class App extends Component< AppProps, {} > {
  
     return (
       <div className={classes.root}>
-        <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <Drawer
             className={classes.drawer}
@@ -184,11 +163,9 @@ class App extends Component< AppProps, {} > {
             <Route path="/bookmarks" render={ (props) => < BookmarksPanel {...props} 
                     usertoken={ this.state.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)} /> }/>
           </main>
-
-        </MuiThemeProvider>        
       </div>
     )
   }
 }
 
-export default withStyles(useStyles)( App );
+export default withTheme(withStyles(useStyles)( App ));

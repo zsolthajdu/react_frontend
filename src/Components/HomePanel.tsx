@@ -11,12 +11,6 @@ import LoginDlg from './LoginDlg';
 
 const drawerWidth = 240;
 
-const theme = createMuiTheme({
-  palette: {
-    type: 'dark'
-  }
-});
-
 const useStyles =( theme: Theme) => createStyles({
   root: {
     display: 'flex',
@@ -56,7 +50,6 @@ class HomePanel extends Component< HomeProps, {} > {
 
     return(
       <div >
-        <MuiThemeProvider theme={theme}>
         <AppBar position="fixed" color="inherit" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" noWrap  className={classes.title }>
@@ -66,7 +59,6 @@ class HomePanel extends Component< HomeProps, {} > {
           </Toolbar>
         </AppBar>
 
-        <Paper >
           <div>
           <Typography variant="h5" component="h3">
             Welcome visitor !
@@ -75,8 +67,6 @@ class HomePanel extends Component< HomeProps, {} > {
           <Typography component="p">
             Please log in to access the bookmarks database.
           </Typography>
-        </Paper>
-        </MuiThemeProvider>
       </div>      
     )
   }
