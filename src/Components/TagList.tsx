@@ -24,28 +24,7 @@ interface ChipProps extends WithStyles<typeof styles>  {
   tagSearch( tag: string ): void ;
 }
 
-interface ChipDesc {
-  key: number;
-  label : string;
-}
-
-interface ChipState {
-  chipData : ChipDesc[];
-}
-
 class ChipList extends React.Component <ChipProps, {} > {
-  state : ChipState = {
-    chipData: []
-  };
-
-  constructor( props: ChipProps ) {
-    super(props)
-    let i : number = 0;
-
-    for( i=0 ; i< props.adat.length ; i++ ) {
-      this.state.chipData[i] = { key:i , label: props.adat[i] };
-    }
-  }
 
   /**
    * More on typescript event handling:
@@ -60,8 +39,8 @@ class ChipList extends React.Component <ChipProps, {} > {
     const { classes } = this.props;
     return (
       <div>
-      { this.state.chipData.map( ( { key, label }) => 
-         <Chip key={key} size="small" clickable={true} label={ label } onClick={ (e) => this.chipClick(label, e) } className={classes.chip}/> 
+      { this.props.adat.map( ( label ) => 
+         <Chip size="small" clickable={true} label={ label } onClick={ (e) => this.chipClick(label, e) } className={classes.chip}/> 
       )}
       </div>
     )
