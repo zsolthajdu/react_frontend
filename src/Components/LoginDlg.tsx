@@ -86,7 +86,7 @@ class LoginDlg  extends Component< LoginProps, {} >  {
       if( null !== response && 'token' in response ) {
         let util = new Util();
         console.log( "Got the token " + response['token'] );
-        util.setCookie( "usertoken", response['token'], 1 )
+        util.setCookie( "usertoken", response['token'], 14 )
 
         this.props.updateToken();
       }

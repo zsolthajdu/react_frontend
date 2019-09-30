@@ -64,7 +64,7 @@ class BookmarkList extends Component< BmListProps, {} > {
     return (
       <div>
         { this.props.bookmarks.map(({ id, title, url, created, description, tags }) =>
-            <Grid container spacing={2} >
+            <Grid container spacing={2} key={id} >
               <Grid item xs={6} >
                 <Tooltip title={description} placement="bottom-start">
                   <Typography>  

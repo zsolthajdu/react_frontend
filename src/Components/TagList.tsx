@@ -30,7 +30,7 @@ class ChipList extends React.Component <ChipProps, {} > {
    * More on typescript event handling:
    * https://fettblog.eu/typescript-react/events/
    */
-  chipClick = ( label : string , e:MouseEvent ) => {
+  chipClick = ( label : string ) => {
     console.log( "Getting bookmarks with label '" + label + "'");
     this.props.tagSearch( label )
   }
@@ -40,7 +40,7 @@ class ChipList extends React.Component <ChipProps, {} > {
     return (
       <div>
       { this.props.adat.map( ( label ) => 
-         <Chip size="small" clickable={true} label={ label } onClick={ (e) => this.chipClick(label, e) } className={classes.chip}/> 
+         <Chip size="small" key={label} clickable={true} label={ label } onClick={ () => this.chipClick(label) } className={classes.chip}/> 
       )}
       </div>
     )

@@ -4,14 +4,18 @@ import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
 import BookmarkList from './Components/BookmarkList';
 import Django from './Server/Django'
 import Bookmarks from './Server/Bookmarks'
 import ComboSelection from './Components/ComboSelection';
 import LoginDlg from './Components/LoginDlg';
 import { SelItem } from './Components/ComboSelection';
+import Util from './Server/Util';
+import { number } from 'prop-types';
 
 const drawerWidth = 240;
 
@@ -31,6 +35,12 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
     flexGrow: 1,
     backgroundColor: palette.background.default,
     padding: spacing(3),
+  },
+
+  fab: {
+    position: 'fixed',
+    bottom: spacing(2),
+    right: spacing(2),
   },
 
   search: {
@@ -82,7 +92,6 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
 
 interface bmProps extends WithStyles<typeof useStyles> {
   usertoken : string,
-  //handleChange( val: number ): void ;
   clearToken() : void;
   updateToken() : void;
 };
@@ -94,7 +103,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
     bookmarks : [],
     searchWord: "",  // store as cookie
     searchTag: "",  // store as cookie
-    pageSize: 50,  // store as cookie
+    pageSize : 50,  // stored as cookie
     currentPage: 1, 
   };
 
@@ -105,11 +114,21 @@ class BookmarksPanel extends Component< bmProps, {} > {
   ];
 
   componentDidMount() {
-    this.getBookmarks();
+    let u : Util = new Util;
+    let ps = u.getCookie( "pagesize" )
+    if( ps !== null ) {
+      console.log( "Sound pagesize value : " + ps )
+      this.setState( { "pageSize": Number( ps ) } );
+      this.getBookmarks( Number(ps) );
+    }
+    else
+      this.getBookmarks();
   }
 
   handlePageSizeChange = ( newLen : number ) => {
     console.log( "handlePageSizeChange : switching to page-size " + newLen )
+    let u : Util = new Util;
+    u.setCookie( "pagesize", String( newLen ) , 365 );
     this.setState( { pageSize: newLen });
     this.getBookmarks( newLen );
   }
@@ -119,12 +138,15 @@ class BookmarksPanel extends Component< bmProps, {} > {
     let bm = new Bookmarks(django);
 
     if( this.props.usertoken !== "" ) {
-      bm.getBookmarks( pageLen !== undefined ? pageLen : this.state.pageSize ).then(
-        (response) => {
-          let bms = response.results;
-          this.setState({  bookmarks: bms })
-        }
-      )
+      if( this.state.searchTag !== "" )
+        this.tagSearch();
+      else
+        bm.getBookmarks( pageLen !== undefined ? pageLen : this.state.pageSize ).then(
+          (response) => {
+            let bms = response.results;
+            this.setState({  bookmarks: bms })
+          }
+        )
     }
     else
       this.clearBookmarks();
@@ -148,16 +170,18 @@ class BookmarksPanel extends Component< bmProps, {} > {
     this.props.clearToken();
   }
 
-  tagSearch( tag: string ) {
+  tagSearch( tag? : string ) {
     let django = new Django();
     let bm = new Bookmarks( django );
 
     if( this.props.usertoken !== "" ) {
-      console.log( 'tagSearch : for ' + tag );
-      bm.search( tag, 1, this.state.pageSize.toString() ).then(
+      let t : string;
+      t = (tag !== undefined ? tag : this.state.searchTag);
+      console.log( 'tagSearch : for ' + t );
+      bm.search( t, 1, this.state.pageSize.toString() ).then(
         (response) => {
           let bms = response.results;
-          this.setState( { bookmarks:bms, searchWord:tag} );
+          this.setState( { bookmarks:bms, searchTag:tag} );
         }
       )
     }
@@ -175,7 +199,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
             </Typography>
 
             <Typography classes={{ root: classes.filterRoot }} >
-              Filter: { this.state.searchWord }
+              Filter: { this.state.searchTag }
             </Typography>
 
             <ComboSelection value={ this.state.pageSize } values={this.pagesizes} title="Size" handleChange={ this.handlePageSizeChange } />
@@ -199,10 +223,13 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
         <BookmarkList bookmarks = { this.state.bookmarks } tagSearch={this.tagSearch.bind(this)} />
 
+          <Fab color="primary" aria-label="add" className={classes.fab}>
+            <AddIcon />
+          </Fab>
+
       </div>
     )
   }
 }
 
 export default withStyles(useStyles)( BookmarksPanel );
-//             <LoginDlg color="inherit" usertoken={ this.props.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this) }/>
