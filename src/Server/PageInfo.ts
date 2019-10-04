@@ -9,7 +9,7 @@ export class PageInfoApp
 
     constructor( djangoSite: Django ) {
         this.djangoSite_ = djangoSite;
-        this.pageinfoUrl_ = djangoSite.getDomain() + "/pageinfo/";
+        this.pageinfoUrl_ = djangoSite.getDomain() + "/v1/pageinfo/";
     }
 
     /**

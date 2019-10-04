@@ -9,6 +9,11 @@ import Typography from '@material-ui/core/Typography';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import BookmarkList from './Components/BookmarkList';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import Button from '@material-ui/core/Button';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+
 import Django from './Server/Django'
 import Bookmarks from './Server/Bookmarks'
 import ComboSelection from './Components/ComboSelection';
@@ -41,6 +46,12 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
     position: 'fixed',
     bottom: spacing(2),
     right: spacing(2),
+  },
+
+  stepper: {
+    maxWidth: 400,
+    flexGrow: 1,
+    align: "center"    
   },
 
   search: {
@@ -101,6 +112,8 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
   state = {
     bookmarks : [],
+    url_next : "",
+    url_prev : "",
     searchWord: "",  // store as cookie
     searchTag: "",  // store as cookie
     pageSize : 50,  // stored as cookie
@@ -144,9 +157,38 @@ class BookmarksPanel extends Component< bmProps, {} > {
         bm.getBookmarks( pageLen !== undefined ? pageLen : this.state.pageSize ).then(
           (response) => {
             let bms = response.results;
-            this.setState({  bookmarks: bms })
+            this.setState({  bookmarks: bms, url_prev: response.prev, url_next:response.next })
           }
         )
+        .catch( ( err ) => {
+          console.log( "getBookmarks Error: " + err );
+        })
+    }
+    else
+      this.clearBookmarks();
+  }
+
+  /**
+   * 
+   * @param nextPage 
+   */
+  getBmPage( nextPage: boolean) {
+    let django = new Django();
+    let bm = new Bookmarks(django);
+
+    if( this.props.usertoken !== "" ) {
+      let theUrl: string = (nextPage ? this.state.url_next : this.state.url_prev);
+
+        bm.getBookmarksUrl( theUrl ).then(
+          (response) => {
+            let bms = response.results;
+            this.setState({  bookmarks: bms, url_prev: response.prev, url_next:response.next })
+          }
+        )
+        .catch( (err) => {
+          console.log( "Couldn't get response to " + theUrl );
+          console.log( "Error: " + err );
+        })
     }
     else
       this.clearBookmarks();
@@ -187,6 +229,18 @@ class BookmarksPanel extends Component< bmProps, {} > {
     }
   }
 
+  handleNext = () => {
+    this.setState( { currentPage: this.state.currentPage+1 } );
+    this.getBmPage( true );  // Move to next page of bookmarks
+  };
+
+  handleBack = () => {
+    if( this.state.currentPage > 1 ) {
+      this.setState( { currentPage: this.state.currentPage-1 } );
+      this.getBmPage( false );
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -197,6 +251,23 @@ class BookmarksPanel extends Component< bmProps, {} > {
             <Typography variant="h6" noWrap className={classes.title }>
               Bookmarks
             </Typography>
+
+            <MobileStepper variant="dots" steps={5} position="static" 
+                className = {classes.root }
+              nextButton={
+                <Button size="small" onClick={this.handleNext} disabled={ this.state.currentPage === 5}>
+                  Next
+                  { <KeyboardArrowRight/> /* theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight /> */}
+                </Button>
+              }
+              backButton={
+                <Button size="small" onClick={ this.handleBack } disabled={ this.state.currentPage === 0}>
+                  { <KeyboardArrowLeft /> /* theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft /> */ }
+                  Back
+                </Button>
+              }
+            />
+
 
             <Typography classes={{ root: classes.filterRoot }} >
               Filter: { this.state.searchTag }

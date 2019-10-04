@@ -17,12 +17,17 @@ export default class Django
     
         // Figure out REST api domain when object is constructed.
         // Gots to be https !!
-        this.domain_ = "https://" + theHost + ":8000/v1";
+        this.domain_ = "https://" + theHost + ":8000";
     }
 
     getDomain() 
     {
         return this.domain_;
+    }
+
+    getAPIVersion()
+    {
+        return "v1";
     }
 
     async getUserToken( user: string, psw:string )

@@ -39,20 +39,19 @@ export default class Bookmarks
         this.djangoSite_ = djangoSite;
 
         console.log( "Bookmarks app at : " + this.djangoSite_.getDomain() );
-        this.bookmarksUrl_ = this.djangoSite_.getDomain() + "/bookmarks/";
+        this.bookmarksUrl_ = this.djangoSite_.getDomain() + "/v1/bookmarks/";
     };
 
     /**
      * Most basic bookmark list query.
      * 
-     * @param {*} fullUrl 
-     * @param {*} csrftoken 
+     * @param {*} pageSize
      */
     async getBookmarks( pageSize: number )
     {
         let respObj = null;
         try {
-            let fullUrl = this.bookmarksUrl_ + '?page_size=' + pageSize.toString() ;
+            let fullUrl = this.bookmarksUrl_ + '?page_size=' + pageSize.toString() ; //+ "&page_num=" + page.toString() ;
             console.log( "getBookmarks with URL: " + fullUrl );
             const response = await this.djangoSite_.get( fullUrl );
             respObj = JSON.parse(response)
@@ -61,6 +60,21 @@ export default class Bookmarks
         catch( err ) {
             console.log( "getBookmarks Failed!!", err );
             //url = null;
+        }
+        return respObj;
+    }
+
+    async getBookmarksUrl( fullUrl: string )
+    {
+        let respObj = null;
+        try {
+            console.log( "getBookmarksUrl with URL: " + this.djangoSite_.getDomain() + fullUrl );
+            const response = await this.djangoSite_.get( this.djangoSite_.getDomain() + fullUrl );
+            respObj = JSON.parse(response)
+            console.log( "getBookmarksUrl : bookmarks count = ", respObj['results'] );
+        }
+        catch( err ) {
+            console.log( "getBookmarksUrl Failed!!", err );
         }
         return respObj;
     }
