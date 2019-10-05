@@ -54,11 +54,6 @@ class App extends Component< AppProps, {} > {
 
   state = {
     usertoken: "",
-    bookmarks : [],
-    searchWord: "",
-    searchTag: "",
-    pageSize: 50,
-    currentPage: 1,
   }
 
   componentDidMount() {
@@ -85,7 +80,7 @@ class App extends Component< AppProps, {} > {
     if( usertok !== null && usertok !== '' ) {
       // Deleting usertoken value
       console.log( document.cookie );
-      this.setState( { usertoken: "", bookmarks: [] } )
+      this.setState( { usertoken: "" } )
       util.deleteCookie( "usertoken" )
 
     }

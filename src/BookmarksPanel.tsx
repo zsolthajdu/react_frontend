@@ -20,7 +20,6 @@ import ComboSelection from './Components/ComboSelection';
 import LoginDlg from './Components/LoginDlg';
 import { SelItem } from './Components/ComboSelection';
 import Util from './Server/Util';
-import { number } from 'prop-types';
 
 const drawerWidth = 240;
 
@@ -51,7 +50,7 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
   stepper: {
     maxWidth: 400,
     flexGrow: 1,
-    align: "center"    
+    marginRight: "20px",
   },
 
   search: {
@@ -118,6 +117,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
     searchTag: "",  // store as cookie
     pageSize : 50,  // stored as cookie
     currentPage: 1, 
+    maxPage: 1,
   };
 
   pagesizes: SelItem[] = [
@@ -157,7 +157,12 @@ class BookmarksPanel extends Component< bmProps, {} > {
         bm.getBookmarks( pageLen !== undefined ? pageLen : this.state.pageSize ).then(
           (response) => {
             let bms = response.results;
-            this.setState({  bookmarks: bms, url_prev: response.prev, url_next:response.next })
+            this.setState({ 
+              bookmarks : bms, 
+              url_prev  : response.previous, 
+              url_next  : response.next,
+              maxPage   : Math.round( Number(response.count) / this.state.pageSize + 0.5 )
+            })
           }
         )
         .catch( ( err ) => {
@@ -182,7 +187,12 @@ class BookmarksPanel extends Component< bmProps, {} > {
         bm.getBookmarksUrl( theUrl ).then(
           (response) => {
             let bms = response.results;
-            this.setState({  bookmarks: bms, url_prev: response.prev, url_next:response.next })
+            this.setState({ 
+              bookmarks : bms, 
+              url_prev  : response.previous, 
+              url_next  : response.next,
+              maxPage   : Math.round( Number(response.count) / this.state.pageSize + 0.5 )
+            })
           }
         )
         .catch( (err) => {
@@ -223,7 +233,12 @@ class BookmarksPanel extends Component< bmProps, {} > {
       bm.search( t, 1, this.state.pageSize.toString() ).then(
         (response) => {
           let bms = response.results;
-          this.setState( { bookmarks:bms, searchTag:tag} );
+          this.setState({ 
+            bookmarks : bms, 
+            url_prev  : response.previous, 
+            url_next  : response.next,
+            maxPage   : Math.round( Number(response.count) / this.state.pageSize + 0.5 )
+          })
         }
       )
     }
@@ -252,8 +267,8 @@ class BookmarksPanel extends Component< bmProps, {} > {
               Bookmarks
             </Typography>
 
-            <MobileStepper variant="dots" steps={5} position="static" 
-                className = {classes.root }
+            <MobileStepper variant="dots" steps={this.state.maxPage} position="static" 
+                activeStep={this.state.currentPage-1} className = {classes.stepper }
               nextButton={
                 <Button size="small" onClick={this.handleNext} disabled={ this.state.currentPage === 5}>
                   Next
@@ -261,7 +276,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
                 </Button>
               }
               backButton={
-                <Button size="small" onClick={ this.handleBack } disabled={ this.state.currentPage === 0}>
+                <Button size="small" onClick={ this.handleBack } disabled={ this.state.currentPage === 1}>
                   { <KeyboardArrowLeft /> /* theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft /> */ }
                   Back
                 </Button>
@@ -294,9 +309,9 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
         <BookmarkList bookmarks = { this.state.bookmarks } tagSearch={this.tagSearch.bind(this)} />
 
-          <Fab color="primary" aria-label="add" className={classes.fab}>
-            <AddIcon />
-          </Fab>
+        <Fab color="primary" aria-label="add" className={classes.fab}>
+          <AddIcon />
+        </Fab>
 
       </div>
     )
