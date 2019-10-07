@@ -18,6 +18,7 @@ import Util from './Server/Util'
 import BookmarksPanel from './BookmarksPanel'
 import HomePanel from './Components/HomePanel'
 import BlogPanel from './Components/BlogPanel'
+import SettingsPanel from './Components/SettingsPanel'
 
 const drawerWidth = 240;
 
@@ -51,6 +52,7 @@ interface AppProps extends WithStyles<typeof useStyles> {
 };
 
 class App extends Component< AppProps, {} > {
+  util : Util = new Util();
 
   state = {
     usertoken: "",
@@ -75,24 +77,27 @@ class App extends Component< AppProps, {} > {
   }
 
   clearToken = () => {
-    let util = new Util()
-    let usertok = util.getCookie("usertoken");
+    let usertok = this.util.getCookie("usertoken");
     if( usertok !== null && usertok !== '' ) {
       // Deleting usertoken value
       console.log( document.cookie );
       this.setState( { usertoken: "" } )
-      util.deleteCookie( "usertoken" )
+      this.util.deleteCookie( "usertoken" )
 
     }
   }
 
   updateToken() {
-    let util = new Util();
-    let t = util.getCookie( 'usertoken' );
+    let t = this.util.getCookie( 'usertoken' );
     if( t !== null && t != "" ) {
       console.log( 'Setting token in state:'+t)
       this.setState( {usertoken : t } );
     }
+  }
+
+  setTheme( newtheme: string ) {
+    this.util.setCookie( "theme", newtheme, 9999 );
+    window.location.reload();
   }
 
   getUserToken() {
@@ -105,6 +110,10 @@ class App extends Component< AppProps, {} > {
 
   render() {
     const { classes } = this.props;
+    let theme =this.util.getCookie( "theme");
+
+    if( theme === "" )
+      theme = "dark";
  
     return (
       <div className={classes.root}>
@@ -152,11 +161,13 @@ class App extends Component< AppProps, {} > {
             <div className={classes.toolbar} />
 
             <Route path="/" exact render={ (props) => < HomePanel {...props} 
-                    usertoken={ this.state.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)}/> }/>
+                    clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)}/> }/>
             <Route path="/blog" render={ (props) => < BlogPanel {...props} 
-                    usertoken={ this.state.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)}/> }/>
+                    clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)}/> }/>
             <Route path="/bookmarks" render={ (props) => < BookmarksPanel {...props} 
-                    usertoken={ this.state.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)} /> }/>
+                    clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)} /> }/>
+            <Route path="/settings" render={ (props) => < SettingsPanel {...props} 
+                    mytheme={ theme } setTheme={ this.setTheme.bind(this)} clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this)} /> }/>
           </main>
       </div>
     )

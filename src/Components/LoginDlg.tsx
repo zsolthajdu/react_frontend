@@ -32,7 +32,6 @@ const styles = ( {spacing, palette } : Theme) => createStyles({
 
 
 interface LoginProps extends WithStyles<typeof styles> {
-  usertoken : string;
   color : string;
   clearToken() : void;
   updateToken() : void;
@@ -42,6 +41,8 @@ interface LoginProps extends WithStyles<typeof styles> {
  * Also Logout. Go figure !
  */
 class LoginDlg  extends Component< LoginProps, {} >  {
+
+  util : Util = new Util;
 
   state = {
     open: false,
@@ -56,7 +57,8 @@ class LoginDlg  extends Component< LoginProps, {} >  {
   }
 
   noToken() : boolean {
-    return ( this.props.usertoken === "" || this.props.usertoken === null );
+    let ut = this.util.getCookie( "usertoken" );
+    return ( ut === "" || ut === null );
   }
 
   /**
@@ -84,9 +86,8 @@ class LoginDlg  extends Component< LoginProps, {} >  {
 
     django.getUserToken( this.state.username, this.state.password ).then( response => {
       if( null !== response && 'token' in response ) {
-        let util = new Util();
         console.log( "Got the token " + response['token'] );
-        util.setCookie( "usertoken", response['token'], 14 )
+        this.util.setCookie( "usertoken", response['token'], 14 )
 
         this.props.updateToken();
       }

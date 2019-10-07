@@ -58,13 +58,11 @@ class ComboSelection extends  React.Component <SelProps, {} > {
     return ( 
       <form autoComplete="off">
         <FormControl className={classes.formControl} >
-          <InputLabel color='primary'  classes={{ root: classes.root } } htmlFor="combo-select">Size</InputLabel>
+          <InputLabel color='primary' htmlFor="combo-select">Size</InputLabel>
           <Select  value={ this.state.val }
                 onChange={ this.handleChange }
-                classes={{ root: classes.root } }
                 inputProps={{ name: this.props.title, id: 'combo-select', } }
               >
-
             { this.props.values.map( ( { val, name }) => 
                 <MenuItem value={val}>{name}</MenuItem>
             )}

@@ -61,6 +61,7 @@ class BookmarkList extends Component< BmListProps, {} > {
     //creation = new Date( entry['created'])
     //$titleText = entry['description' ] + "\n\nCreated : " + creation.toLocaleDateString() + " : " + creation.toLocaleTimeString() + '       ID:' + entry['id']
 
+    console.log( "BookmarkList render() num=" + this.props.bookmarks.length );
     return (
       <div>
         { this.props.bookmarks.map(({ id, title, url, created, description, tags }) =>

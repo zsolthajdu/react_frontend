@@ -38,7 +38,6 @@ const useStyles =( theme: Theme) => createStyles({
 });
 
 interface HomeProps extends WithStyles<typeof useStyles> {
-  usertoken : string,
   clearToken() : void;
   updateToken() : void;
 };
@@ -55,7 +54,7 @@ class HomePanel extends Component< HomeProps, {} > {
             <Typography variant="h6" noWrap  className={classes.title }>
               Home
             </Typography>
-            <LoginDlg color="inherit" usertoken={ this.props.usertoken } clearToken={ this.props.clearToken } updateToken={ this.props.updateToken } />
+            <LoginDlg color="inherit" clearToken={ this.props.clearToken } updateToken={ this.props.updateToken } />
           </Toolbar>
         </AppBar>
 

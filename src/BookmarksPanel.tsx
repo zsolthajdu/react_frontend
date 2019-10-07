@@ -101,13 +101,14 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
 
 
 interface bmProps extends WithStyles<typeof useStyles> {
-  usertoken : string,
   clearToken() : void;
   updateToken() : void;
 };
 
 
 class BookmarksPanel extends Component< bmProps, {} > {
+
+  util : Util = new Util;
 
   state = {
     bookmarks : [],
@@ -127,10 +128,9 @@ class BookmarksPanel extends Component< bmProps, {} > {
   ];
 
   componentDidMount() {
-    let u : Util = new Util;
-    let ps = u.getCookie( "pagesize" )
+    let ps = this.util.getCookie( "pagesize" )
     if( ps !== null ) {
-      console.log( "Sound pagesize value : " + ps )
+      console.log( "Found pagesize value : " + ps )
       this.setState( { "pageSize": Number( ps ) } );
       this.getBookmarks( Number(ps) );
     }
@@ -140,8 +140,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
   handlePageSizeChange = ( newLen : number ) => {
     console.log( "handlePageSizeChange : switching to page-size " + newLen )
-    let u : Util = new Util;
-    u.setCookie( "pagesize", String( newLen ) , 365 );
+    this.util.setCookie( "pagesize", String( newLen ) , 365 );
     this.setState( { pageSize: newLen });
     this.getBookmarks( newLen );
   }
@@ -149,8 +148,10 @@ class BookmarksPanel extends Component< bmProps, {} > {
   getBookmarks( pageLen? : number ) {
     let django = new Django();
     let bm = new Bookmarks(django);
+    let ut = this.util.getCookie( "usertoken" );
 
-    if( this.props.usertoken !== "" ) {
+    console.log( "getBookmarks token=", ut );
+    if( ut !== "" ) {
       if( this.state.searchTag !== "" )
         this.tagSearch();
       else
@@ -180,8 +181,9 @@ class BookmarksPanel extends Component< bmProps, {} > {
   getBmPage( nextPage: boolean) {
     let django = new Django();
     let bm = new Bookmarks(django);
+    let ut = this.util.getCookie( "usertoken" );
 
-    if( this.props.usertoken !== "" ) {
+    if( ut !== "" ) {
       let theUrl: string = (nextPage ? this.state.url_next : this.state.url_prev);
 
         bm.getBookmarksUrl( theUrl ).then(
@@ -225,8 +227,9 @@ class BookmarksPanel extends Component< bmProps, {} > {
   tagSearch( tag? : string ) {
     let django = new Django();
     let bm = new Bookmarks( django );
+    let ut = this.util.getCookie( "usertoken" );
 
-    if( this.props.usertoken !== "" ) {
+    if( ut !== "" ) {
       let t : string;
       t = (tag !== undefined ? tag : this.state.searchTag);
       console.log( 'tagSearch : for ' + t );
@@ -303,7 +306,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
                 inputProps={{ 'aria-label': 'search' }}
               />
             </div>              
-            <LoginDlg color="inherit" usertoken={ this.props.usertoken } clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this) } />
+            <LoginDlg color="inherit" clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this) } />
           </Toolbar>
         </AppBar>
 
