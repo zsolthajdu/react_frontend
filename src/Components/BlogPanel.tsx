@@ -45,15 +45,6 @@ class BlogPanel extends Component< BlogProps, {} > {
     const { classes } = this.props;
     return(
       <div >
-        <AppBar position="fixed" color="inherit" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" noWrap  className={classes.title }>
-              Blog
-            </Typography>
-            <LoginDlg color="inherit" clearToken={ this.props.clearToken } updateToken={ this.props.updateToken } />
-          </Toolbar>
-        </AppBar>
-
         <Typography >
           Blog coming soon ...
         </Typography>

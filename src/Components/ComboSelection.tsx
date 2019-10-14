@@ -1,4 +1,4 @@
-import React, { Component, MouseEvent } from 'react';
+import React from 'react';
 
 import Select from '@material-ui/core/Select';
 import { Theme, createStyles, WithStyles  } from '@material-ui/core/styles';
@@ -29,26 +29,14 @@ interface SelProps extends WithStyles<typeof useStyles> {
   handleChange( val: number ): void ;
 };
 
-interface SelState {
-  val : number;
-};
-
 export interface SelItem {
   val: number;
   name: string;
 };
 
-
 class ComboSelection extends  React.Component <SelProps, {} > { 
-  state : SelState = { val : 25 }
-
-  constructor( props: SelProps ) {
-    super( props );
-    this.state.val = props.value;
-  }
 
   handleChange = (event: React.ChangeEvent<{ value: unknown }>) =>  {
-    this.setState( {val: event.target.value as number } );
     this.props.handleChange( event.target.value as number );
   }
 
@@ -59,7 +47,7 @@ class ComboSelection extends  React.Component <SelProps, {} > {
       <form autoComplete="off">
         <FormControl className={classes.formControl} >
           <InputLabel color='primary' htmlFor="combo-select">Size</InputLabel>
-          <Select  value={ this.state.val }
+          <Select  value={ this.props.value }
                 onChange={ this.handleChange }
                 inputProps={{ name: this.props.title, id: 'combo-select', } }
               >

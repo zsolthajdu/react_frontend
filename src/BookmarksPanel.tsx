@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { createStyles, fade, Theme, WithStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
 import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -17,7 +18,6 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import Django from './Server/Django'
 import Bookmarks from './Server/Bookmarks'
 import ComboSelection from './Components/ComboSelection';
-import LoginDlg from './Components/LoginDlg';
 import { SelItem } from './Components/ComboSelection';
 import Util from './Server/Util';
 
@@ -28,8 +28,20 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
     display: 'flex',
   },
   appBar: {
+    top: 'auto',
+    bottom: 0,    
+    transition: transitions.create(['margin', 'width'], {
+      easing: transitions.easing.sharp,
+      duration: transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
+    transition: transitions.create(['margin', 'width'], {
+      easing: transitions.easing.easeOut,
+      duration: transitions.duration.enteringScreen,
+    }),
   },
   toolbar: mixins.toolbar,
   title : {
@@ -51,6 +63,12 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
     maxWidth: 400,
     flexGrow: 1,
     marginRight: "20px",
+  },
+
+  topBar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 
   search: {
@@ -103,6 +121,7 @@ const useStyles =( {spacing, palette,mixins,shape,breakpoints,transitions} : The
 interface bmProps extends WithStyles<typeof useStyles> {
   clearToken() : void;
   updateToken() : void;
+  draweropen: boolean;
 };
 
 
@@ -259,19 +278,18 @@ class BookmarksPanel extends Component< bmProps, {} > {
     }
   }
 
-  render() {
+  /**
+   * 
+   */
+  drawBottomAppBar()
+  {
     const { classes } = this.props;
 
     return (
-      <div >
-        <AppBar position="fixed" color="inherit" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" noWrap className={classes.title }>
-              Bookmarks
-            </Typography>
-
-            <MobileStepper variant="dots" steps={this.state.maxPage} position="static" 
-                activeStep={this.state.currentPage-1} className = {classes.stepper }
+      <AppBar position="fixed" color="inherit"  className={clsx(classes.appBar, { [classes.appBarShift]: this.props.draweropen,})} >
+        <Toolbar>
+          <MobileStepper variant="dots" steps={this.state.maxPage} position="static" 
+              activeStep={this.state.currentPage-1} className = {classes.stepper }
               nextButton={
                 <Button size="small" onClick={this.handleNext} disabled={ this.state.currentPage === 5}>
                   Next
@@ -284,38 +302,41 @@ class BookmarksPanel extends Component< bmProps, {} > {
                   Back
                 </Button>
               }
+          />
+          <Fab color="secondary" aria-label="add" className={classes.fab}>
+            <AddIcon />
+          </Fab>
+
+          <Typography classes={{ root: classes.filterRoot }} >
+            Filter: { this.state.searchTag }
+          </Typography>
+
+          <ComboSelection value={ this.state.pageSize } values={this.pagesizes} title="Size" handleChange={ this.handlePageSizeChange } />
+
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
             />
+          </div>
 
+        </Toolbar>
+      </AppBar>
+    )
+  }
 
-            <Typography classes={{ root: classes.filterRoot }} >
-              Filter: { this.state.searchTag }
-            </Typography>
-
-            <ComboSelection value={ this.state.pageSize } values={this.pagesizes} title="Size" handleChange={ this.handlePageSizeChange } />
-
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-              />
-            </div>              
-            <LoginDlg color="inherit" clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind(this) } />
-          </Toolbar>
-        </AppBar>
-
+  render() {
+    return (
+      <div >
         <BookmarkList bookmarks = { this.state.bookmarks } tagSearch={this.tagSearch.bind(this)} />
-
-        <Fab color="primary" aria-label="add" className={classes.fab}>
-          <AddIcon />
-        </Fab>
-
+        { this.drawBottomAppBar() }
       </div>
     )
   }
