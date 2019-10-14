@@ -23,7 +23,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Util from './Server/Util'
-import BookmarksPanel from './BookmarksPanel'
+import BookmarksPanel from './Components/BookmarksPanel'
 import HomePanel from './Components/HomePanel'
 import BlogPanel from './Components/BlogPanel'
 import SettingsPanel from './Components/SettingsPanel'

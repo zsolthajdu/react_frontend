@@ -9,17 +9,17 @@ import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import BookmarkList from './Components/BookmarkList';
+import BookmarkList from './BookmarkList';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-import Django from './Server/Django'
-import Bookmarks from './Server/Bookmarks'
-import ComboSelection from './Components/ComboSelection';
-import { SelItem } from './Components/ComboSelection';
-import Util from './Server/Util';
+import Django from '../Server/Django'
+import Bookmarks from '../Server/Bookmarks'
+import ComboSelection from './ComboSelection';
+import { SelItem } from './ComboSelection';
+import Util from '../Server/Util';
 
 const drawerWidth = 240;
 
