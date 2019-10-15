@@ -6,13 +6,14 @@ import Link from '@material-ui/core/Link';
 import { Route, Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
+import { NavLink } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import HomeIcon from '@material-ui/icons/Home';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
@@ -31,12 +32,13 @@ import LoginDlg from './Components/LoginDlg';
 
 const drawerWidth = 240;
 
-  const useStyles =( {spacing, palette,mixins,transitions} : Theme) => createStyles({
+  const useStyles =( {spacing, breakpoints, mixins,transitions, zIndex } : Theme) => createStyles({
   root: {
     display: 'flex',
   },
   appBar: {
-    transition: transitions.create(['margin', 'width'], {
+    zIndex: zIndex.drawer + 1,
+    transition: transitions.create([ 'width', 'margin' ], {
       easing: transitions.easing.sharp,
       duration: transitions.duration.leavingScreen,
     }),
@@ -44,14 +46,15 @@ const drawerWidth = 240;
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: transitions.create(['margin', 'width'], {
-      easing: transitions.easing.easeOut,
+    transition: transitions.create([ 'width', 'margin'], {
+      easing: transitions.easing.sharp,
       duration: transitions.duration.enteringScreen,
     }),
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    whiteSpace: 'nowrap',
   },
   drawerPaper: {
     width: drawerWidth,
@@ -61,7 +64,7 @@ const drawerWidth = 240;
     flexGrow : 1
   },
   menuButton: {
-    marginRight: spacing(2),
+    marginRight: 36,
   },
   hide: {
     display: 'none',
@@ -73,22 +76,35 @@ const drawerWidth = 240;
     ...mixins.toolbar,
     justifyContent: 'flex-end',
   },
-  content: {
-    flexGrow: 1,
-    padding: spacing(3),
-    transition: transitions.create('margin', {
+
+  drawerOpen: {
+    width: drawerWidth,
+    transition: transitions.create('width', {
+      easing: transitions.easing.sharp,
+      duration: transitions.duration.enteringScreen,
+    }),
+  },
+  drawerClose: {
+    transition: transitions.create('width', {
       easing: transitions.easing.sharp,
       duration: transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
+    overflowX: 'hidden',
+    width: spacing(7) + 1,
+    [breakpoints.up('sm')]: {
+      width: spacing(9) + 1,
+    },
   },
-  contentShift: {
-    transition: transitions.create('margin', {
-      easing: transitions.easing.easeOut,
-      duration: transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },  
+  link: {
+    textDecoration: 'none',
+  },
+  current: {
+    color: 'red !important',
+  },
+  content: {
+    flexGrow: 1,
+    padding: spacing(3),
+  },
 });
 
 interface AppProps extends WithStyles<typeof useStyles> {
@@ -159,7 +175,7 @@ class App extends Component< AppProps, {} > {
   renderAppBar() {
     const { classes } = this.props;
     return (
-      <AppBar position="fixed" color="inherit"     
+      <AppBar position="fixed" 
             className={clsx(classes.appBar, { [classes.appBarShift]: this.state.draweropen,
       })}>
         <Toolbar>
@@ -168,7 +184,7 @@ class App extends Component< AppProps, {} > {
             aria-label="open drawer"
             onClick={ this.handleDrawerOpen}
             edge="start"
-            className={ clsx(classes.menuButton, this.state.draweropen && classes.hide)}
+            className={clsx(classes.menuButton, { [classes.hide]: this.state.draweropen, })}
           >
             <MenuIcon />
           </IconButton>          
@@ -183,50 +199,52 @@ class App extends Component< AppProps, {} > {
 
   renderDrawer() {
     const { classes } = this.props;
+
+    const routes = [
+      { path: '/' , title: "Home", icon: () => <HomeIcon /> },
+      { path: '/blog' , title: "Blog", icon: () => <InboxIcon /> },
+      { path: '/bookmarks' , title: "Bookmarks", icon: () => <BookmarksIcon /> },
+      { path: '/settings' , title: "Settings", icon: () => <SettingsIcon /> }
+    ]
+
+
+
     return (
       <Drawer
-      className={classes.drawer}
-      variant="persistent"
-      open={ this.state.draweropen }
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-      anchor="left"
-    >
+        variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: this.state.draweropen,
+          [classes.drawerClose]: !this.state.draweropen,
+        })}
+        classes={{
+          paper: clsx({
+            [classes.drawerOpen]: this.state.draweropen,
+            [classes.drawerClose]: !this.state.draweropen,
+          }),
+        }}
+        open={ this.state.draweropen }
+      >
       <div className={classes.drawerHeader}>
-          <IconButton onClick={ this.handleDrawerClose}>
-            { <ChevronLeftIcon />  /*this.props.theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon /> */ }
-          </IconButton>
-        </div>
-              
+        <IconButton onClick={ this.handleDrawerClose}>
+          { <ChevronLeftIcon />  /*this.props.theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon /> */ }
+        </IconButton>
+      </div>
+
       <Divider />
 
-      <List>
-        <ListItem button>
-          <ListItemIcon><HomeIcon /></ListItemIcon>
-          <Link color="textPrimary" component={RouterLink} to="/">
-            Home
-          </Link>
-        </ListItem>
-        <ListItem button >
-          <ListItemIcon><InboxIcon /></ListItemIcon>
-          <Link color="textPrimary" component={ RouterLink } to="/blog">
-            Blog
-          </Link>
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon><BookmarksIcon /></ListItemIcon>
-          <Link color="textPrimary" component={ RouterLink } to="/bookmarks">
-            Bookmarks
-          </Link>
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon><SettingsIcon /></ListItemIcon>
-          <Link color="textPrimary" component={ RouterLink } to="/settings">
-            Settings
-          </Link>
-        </ListItem>
-      </List>
+      { routes.map((route, index) => {
+        return (
+            <NavLink key={index} exact={true} activeClassName={classes.current} className={classes.link} to={route.path} >
+                <ListItem button={true}>
+                    <ListItemIcon>
+                        {route.icon()}
+                    </ListItemIcon>
+                    <ListItemText primary={route.title} />
+                </ListItem>
+            </NavLink>
+        );
+      })}
+
     </Drawer>
     )
   }
@@ -245,9 +263,7 @@ class App extends Component< AppProps, {} > {
           { this.renderAppBar() }
           { this.renderDrawer() }
 
-        <main className={clsx(classes.content, {
-              [classes.contentShift]: this.state.draweropen,
-          })}>
+        <main className={classes.content} >
 
             <div className={classes.drawerHeader} />
 

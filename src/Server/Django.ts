@@ -17,8 +17,7 @@ export default class Django
     
         // Figure out REST api domain when object is constructed.
         // Gots to be https !!
-        //this.domain_ = "https://" + theHost + ":8000";
-        this.domain_ = "http://192.168.234.95:8000";
+        this.domain_ = "https://" + theHost + ":8000";
     }
 
     getDomain() 
