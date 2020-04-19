@@ -42,7 +42,7 @@ interface LoginProps extends WithStyles<typeof styles> {
  */
 class LoginDlg  extends Component< LoginProps, {} >  {
 
-  util : Util = new Util;
+  util : Util = new Util()
 
   state = {
     open: false,
@@ -87,7 +87,7 @@ class LoginDlg  extends Component< LoginProps, {} >  {
     django.getUserToken( this.state.username, this.state.password ).then( response => {
       if( null !== response && 'token' in response ) {
         console.log( "Got the token " + response['token'] );
-        this.util.setCookie( "usertoken", response['token'], 14 )
+        this.util.setCookie( "usertoken", response['token'], 7 )
 
         this.props.updateToken();
       }
@@ -105,8 +105,8 @@ class LoginDlg  extends Component< LoginProps, {} >  {
   
   render() {
     const { open } = this.state
-    if( !this.noToken() )
-       this.state.open = false;
+    //if( !this.noToken() )
+     //  this.state.open = false;
 
     return <Fragment>
       <Button color="inherit" onClick={this.handleToggle}  >

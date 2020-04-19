@@ -17,7 +17,9 @@ export default class Django
     
         // Figure out REST api domain when object is constructed.
         // Gots to be https !!
-        this.domain_ = "https://" + theHost + ":8000";
+        //this.domain_ = "https://" + theHost + ":8000";
+        //this.domain_ = "http://192.168.234.95:8000";
+        this.domain_ = "http://localhost";
     }
 
     getDomain() 
@@ -32,12 +34,12 @@ export default class Django
 
     async getUserToken( user: string, psw:string )
     {
-        let tokenUrl = this.domain_ + "/get-token/";
+        let tokenUrl = this.domain_ + "/v1/get-token/";
         let respObj = null;
     
         try {
             let sendObject = JSON.stringify({ username: user, password: psw } );
-            console.log( "getUserToken : " + sendObject );
+            console.log( "getUserToken : " + tokenUrl );
     
             let response: string;
             response = await this.post( tokenUrl, sendObject, true );
@@ -142,13 +144,13 @@ export default class Django
                 xhr.open( 'PUT', url );
 
             let csrftoken = util.getCookie('csrftoken');
-            if( csrftoken != null )
+            if( csrftoken !== null && csrftoken!=="" )
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             let usertok = util.getCookie('usertoken');
-            if(  usertok != null )
+            if(  usertok !== null && usertok!=="" )
                 xhr.setRequestHeader("Authorization", "Token "+ usertok );
 
-            if( content != null )
+            if( content !== null && content!=="")
                 xhr.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
 
             xhr.onload = function() {

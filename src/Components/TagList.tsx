@@ -18,9 +18,13 @@ const styles = ({ spacing }: Theme) => createStyles({
   },
 });
 
+interface TagEntry {
+  id: Number
+  name: string
+}
 
 interface ChipProps extends WithStyles<typeof styles>  {
-  adat : string[];
+  adat : TagEntry[];
   tagSearch( tag: string ): void ;
 }
 
@@ -40,7 +44,7 @@ class ChipList extends React.Component <ChipProps, {} > {
     return (
       <div>
       { this.props.adat.map( ( label ) => 
-         <Chip size="small" key={label} clickable={true} label={ label } onClick={ () => this.chipClick(label) } className={classes.chip}/> 
+         <Chip size="small" key={label.name } clickable={true} label={ label.name } onClick={ () => this.chipClick(label.name) } className={classes.chip}/> 
       )}
       </div>
     )

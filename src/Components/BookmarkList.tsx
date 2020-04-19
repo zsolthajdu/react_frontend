@@ -27,8 +27,13 @@ const styles =  ( { spacing }: Theme ) => createStyles({
   },
 });
 
+interface TagEntry {
+  id: Number
+  name: string
+}
+
 /**
- * Describes the info about a particular bookmarks.
+ * Describes the info about a particular bookmark
  * BookmarkList gets an array of these in the input property.
  */
 interface BookmarkRecord {
@@ -37,7 +42,7 @@ interface BookmarkRecord {
   url: string;
   created: Date;
   description: string;
-  tags : string[];
+  tags : TagEntry[];
 }
 
 interface BmListProps extends WithStyles<typeof styles>  {

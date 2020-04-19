@@ -124,17 +124,16 @@ interface bmProps extends WithStyles<typeof useStyles> {
   draweropen: boolean;
 };
 
-
 class BookmarksPanel extends Component< bmProps, {} > {
 
-  util : Util = new Util;
+  util : Util = new Util()
 
   state = {
     bookmarks : [],
     url_next : "",
     url_prev : "",
-    searchWord: "",  // store as cookie
-    searchTag: "",  // store as cookie
+    searchWord: "",
+    searchTag: "", 
     pageSize : 50,  // stored as cookie
     currentPage: 1, 
     maxPage: 1,
@@ -148,7 +147,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
   componentDidMount() {
     let ps = this.util.getCookie( "pagesize" )
-    if( ps !== null ) {
+    if( ps !== undefined && Number(ps) !== 0 ) {
       console.log( "Found pagesize value : " + ps )
       this.setState( { "pageSize": Number( ps ) } );
       this.getBookmarks( Number(ps) );
