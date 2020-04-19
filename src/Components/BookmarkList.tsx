@@ -3,7 +3,6 @@ import { IconButton, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import { Theme, WithStyles, createStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Edit, Delete } from '@material-ui/icons'
@@ -75,7 +74,7 @@ class BookmarkList extends Component< BmListProps, {} > {
     console.log( "BookmarkList render() num=" + this.props.bookmarks.length );
     return (
       <div>
-        <Paper square className={classes.paper} >
+
         { this.props.bookmarks.map(({ id, title, url, created, description, tags }) =>
             <Grid container spacing={2} key={id} >
               <Grid item xs={6} >
@@ -98,7 +97,7 @@ class BookmarkList extends Component< BmListProps, {} > {
               </Grid>
             </Grid>
         )}
-        </Paper>
+
       </div>
     )
   }
