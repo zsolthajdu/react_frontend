@@ -37,12 +37,7 @@ interface AppProps extends WithStyles<typeof useStyles> {
 };
 
 class App extends Component< AppProps, {} > {
-  util : Util;
-
-  constructor( props: AppProps ) {
-    super( props );
-    this.util = new Util();
-  }
+  util : Util = new Util()
 
   state = {
     usertoken: "",
@@ -74,7 +69,6 @@ class App extends Component< AppProps, {} > {
       console.log( document.cookie );
       this.setState( { usertoken: "" } )
       this.util.deleteCookie( "usertoken" )
-
     }
   }
 
@@ -122,7 +116,7 @@ class App extends Component< AppProps, {} > {
           <Typography variant="h6" noWrap  className={classes.title }>
             Algoretum
           </Typography>
-          <LoginDlg color="inherit" clearToken={ this.clearToken } updateToken={ this.updateToken } />
+          <LoginDlg color="inherit" clearToken={ this.clearToken.bind(this) } updateToken={ this.updateToken.bind( this ) } />
         </Toolbar>
       </AppBar>
     )
