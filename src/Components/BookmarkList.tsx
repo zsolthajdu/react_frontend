@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Edit, Delete } from '@material-ui/icons'
 import ChipList from './TagList'
+import BookmarkListEntry from './BookmarkListEntry'
 
 const styles =  ( { spacing }: Theme ) => createStyles({
   root: {
@@ -78,11 +79,7 @@ class BookmarkList extends Component< BmListProps, {} > {
         { this.props.bookmarks.map(({ id, title, url, created, description, tags }) =>
             <Grid container spacing={2} key={id} >
               <Grid item xs={6} >
-                <Tooltip title={description} placement="bottom-start">
-                  <Typography>  
-                    <Link href={ url } color="textPrimary" className={classes.link}>{title}  </Link>
-                  </Typography>
-                </Tooltip>
+                <BookmarkListEntry tooltip={description} url={url} title={title } />
               </Grid>
               <Grid item xs={5} >
                   <ChipList adat={tags} tagSearch={this.props.tagSearch}/>
