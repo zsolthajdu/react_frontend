@@ -1,25 +1,21 @@
-
-import React, { MouseEvent } from 'react';
-import { createStyles, WithStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip'
 import Link from '@material-ui/core/Link';
-import { PinDropSharp } from '@material-ui/icons';
+
 
 // https://material-ui.com/guides/typescript/
+// https://material-ui.com/system/typography/
+// https://material-ui.com/components/tooltips/
 
-const styles = ({ spacing }: Theme) => createStyles({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  grow: {
-    flexGrow: 1,
-  },  
-  chip: {
-    margin: spacing(1),
-  },
-});
+const CustomTooltip = withStyles((theme) => ({
+  tooltip: {
+    color: "text.primary",
+    backgroundColor: "text.primary",
+    fontSize: theme.typography.pxToRem(14)
+  }
+}))(Tooltip);
+
 
 interface OwnProps {
   tooltip : String
@@ -28,15 +24,16 @@ interface OwnProps {
 }
 
 
-const BookmarkListEntry : React.FC< OwnProps> = (props) => {
+const BookmarkListEntry = (props : OwnProps ) => {
+
 
   return (
-    <Tooltip title = { props.tooltip } >
+    <CustomTooltip title = { props.tooltip } >
       <Link href={ props.url } color="textPrimary" >{ props.title}  </Link>
-    </Tooltip>
+    </CustomTooltip>
   )
 
 }
 
 
-export default BookmarkListEntry as React.ComponentType<OwnProps>;
+export default  BookmarkListEntry as React.ComponentType<OwnProps>;
