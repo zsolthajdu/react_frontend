@@ -40,7 +40,7 @@ interface BookmarkRecord {
   id: number;
   title : string;
   url: string;
-  created: Date;
+  created: string;
   description: string;
   tags : TagEntry[];
 }
@@ -79,7 +79,7 @@ class BookmarkList extends Component< BmListProps, {} > {
         { this.props.bookmarks.map(({ id, title, url, created, description, tags }) =>
             <Grid container spacing={2} key={id} >
               <Grid item xs={6} >
-                <BookmarkListEntry tooltip={description} url={url} title={title } />
+                <BookmarkListEntry tooltip={description} url={url} title={title } id={id} creation={ created }/>
               </Grid>
               <Grid item xs={5} >
                   <ChipList adat={tags} tagSearch={this.props.tagSearch}/>

@@ -8,6 +8,10 @@ import Link from '@material-ui/core/Link';
 // https://material-ui.com/system/typography/
 // https://material-ui.com/components/tooltips/
 
+
+/**
+ * Customized tooltip 
+ */
 const CustomTooltip = withStyles((theme) => ({
   tooltip: {
     color: "text.primary",
@@ -21,14 +25,22 @@ interface OwnProps {
   tooltip : String
   url : string
   title : String
+  creation : string
+  id : number
 }
 
 
 const BookmarkListEntry = (props : OwnProps ) => {
 
+  const created = new Date( props.creation )
+  const bminfo = "\n\nCreated:" + created.toLocaleDateString() + ' : ' + created.toLocaleTimeString() + "    Id : " + String(props.id)
 
   return (
-    <CustomTooltip title = { props.tooltip } >
+    <CustomTooltip title = { 
+      <React.Fragment>
+        <p>{props.tooltip }</p> {bminfo}
+      </React.Fragment>
+    }>
       <Link href={ props.url } color="textPrimary" >{ props.title}  </Link>
     </CustomTooltip>
   )
