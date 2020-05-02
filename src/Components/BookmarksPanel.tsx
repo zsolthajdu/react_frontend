@@ -20,6 +20,7 @@ import Bookmarks from '../Server/Bookmarks'
 import ComboSelection from './ComboSelection';
 import { SelItem } from './ComboSelection';
 import Util from '../Server/Util';
+import BookmarkAdd from './BookmarkAdd'
 
 const drawerWidth = 240;
 
@@ -302,10 +303,9 @@ class BookmarksPanel extends Component< bmProps, {} > {
                 </Button>
               }
           />
-          <Fab color="secondary" aria-label="add" className={classes.fab}>
-            <AddIcon />
-          </Fab>
 
+          <BookmarkAdd />
+          
           <Typography classes={{ root: classes.filterRoot }} >
             Filter: { this.state.searchTag }
           </Typography>

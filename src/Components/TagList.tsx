@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
