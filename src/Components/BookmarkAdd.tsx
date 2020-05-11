@@ -10,7 +10,7 @@ import {
 import DialogActions from '@material-ui/core/DialogActions';
 import { Add } from '@material-ui/icons'
 import Bookmarks from '../Server/Bookmarks'
-
+import Django from '../Server/Django'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -34,30 +34,52 @@ const BookmarkAdd = () => {
     setOpen(false);
   };
 
+  interface tagsEntry {
+    name : string
+  }
+
   const addBookmark = () => {
     //event.preventDefault()
-    console.log( "addBookmark Title=" + title )
-    console.log( "addBookmark Url  =" + url )
-    console.log( "addBookmark Tags =" + tags )
+    console.log( "addBookmark Title= " + title )
+    console.log( "addBookmark Url  = " + url )
 
-	 //Bookmarks.add( {} )
+    // Convert comma separated tags to array
+    let tgs : tagsEntry[] = []
+    tags.split(",").forEach( t => {
+      tgs.push( { "name": t } )
+    })
+    console.log( "addBookmark Tags = " + tgs.toString() )
+
+    const e = {
+      id: "-1",
+      url: url,
+      title: title,
+      desc: description,
+      public: false,
+      tags: tgs
+    };
+
+    let django = new Django();
+    let bm = new Bookmarks(django);
+
+	  bm.add( e )
 
     handleClose()
   }
  
-  	const handleUrlChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
+ 	const handleUrlChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
 		setUrl( event.target.value )
 	}
 
-  	const handleTitleChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
+ 	const handleTitleChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
 		setTitle( event.target.value )
 	}
 
-  	const handleDescriptionChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
+ 	const handleDescriptionChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
 		setDescription( event.target.value )
 	}
 
-  	const handleTagsChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
+ 	const handleTagsChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
 		setTags( event.target.value )
 	}
 

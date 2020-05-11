@@ -11,12 +11,16 @@ export const SearchTypes = {
  SEARCH_BOTH : 3
 };
 
+interface tagsEntry {
+  name : string
+}
+
 interface addEntry {
     id      : string;
     title   : string;
     desc    : string;
     url     : string;
-    tags    : string[];
+    tags    : tagsEntry[];
     public  : boolean;
 }
 
@@ -135,7 +139,7 @@ export default class Bookmarks
             let sendObject = JSON.stringify({title: entry.title, 
                 description: entry.desc, 
                 url: entry.url, 
-                tags: [entry.tags] ,
+                tags: entry.tags,
                 public: entry.public });
 
             const response = await this.djangoSite_.post( addUrl, sendObject, usePost );
