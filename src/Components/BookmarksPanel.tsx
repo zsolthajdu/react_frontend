@@ -164,7 +164,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
     this.getBookmarks( newLen );
   }
 
-  getBookmarks( pageLen? : number ) {
+  getBookmarks = ( pageLen? : number ) => {
     let django = new Django();
     let bm = new Bookmarks(django);
     let ut = this.util.getCookie( "usertoken" );
@@ -232,6 +232,10 @@ class BookmarksPanel extends Component< bmProps, {} > {
 
   updateToken() {
     this.props.updateToken();
+    this.getBookmarks();
+  }
+
+  refresh() {
     this.getBookmarks();
   }
 
@@ -304,7 +308,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
               }
           />
 
-          <BookmarkAdd />
+          <BookmarkAdd refresh = { this.refresh } />
           
           <Typography classes={{ root: classes.filterRoot }} >
             Filter: { this.state.searchTag }

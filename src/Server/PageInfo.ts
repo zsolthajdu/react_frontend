@@ -2,7 +2,7 @@
 import Django from './Django'
 
 
-export class PageInfoApp
+export default class PageInfoApp
 {
     djangoSite_ : Django;
     pageinfoUrl_ : string;

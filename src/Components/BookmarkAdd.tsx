@@ -11,6 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { Add } from '@material-ui/icons'
 import Bookmarks from '../Server/Bookmarks'
 import Django from '../Server/Django'
+import PageInfoApp from '../Server/PageInfo'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -22,7 +23,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const BookmarkAdd = () => {
+interface addProps {
+  refresh() : void;
+};
+
+interface urlInfoResult {
+  url: string
+  title: string
+  description : string
+  tags: string
+}
+
+const BookmarkAdd = ( props : addProps ) => {
 
   const classes = useStyles();
   const [ open, setOpen ] = useState( false )
@@ -39,7 +51,6 @@ const BookmarkAdd = () => {
   }
 
   const addBookmark = () => {
-    //event.preventDefault()
     console.log( "addBookmark Title= " + title )
     console.log( "addBookmark Url  = " + url )
 
@@ -48,7 +59,7 @@ const BookmarkAdd = () => {
     tags.split(",").forEach( t => {
       tgs.push( { "name": t } )
     })
-    console.log( "addBookmark Tags = " + tgs.toString() )
+    //console.log( "addBookmark Tags = " + tgs.toString() )
 
     const e = {
       id: "-1",
@@ -62,26 +73,24 @@ const BookmarkAdd = () => {
     let django = new Django();
     let bm = new Bookmarks(django);
 
-	  bm.add( e )
+    bm.add( e )
+    
+    //props.refresh()
 
     handleClose()
   }
- 
- 	const handleUrlChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
-		setUrl( event.target.value )
-	}
 
- 	const handleTitleChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
-		setTitle( event.target.value )
-	}
-
- 	const handleDescriptionChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
-		setDescription( event.target.value )
-	}
-
- 	const handleTagsChange = (event:  React.ChangeEvent< HTMLInputElement>) => {
-		setTags( event.target.value )
-	}
+  // 
+  const urlInfo = () => {
+    let dj = new Django();
+    const pi = new PageInfoApp( dj )
+    pi.getPageInfo( url ).then( (pageInfo : urlInfoResult ) => {
+      console.log( pageInfo )
+      setTitle( pageInfo.title )
+      setDescription( pageInfo.description )
+      setTags( pageInfo.tags )
+    })
+  }
 
   return(
     <div>
@@ -106,11 +115,11 @@ const BookmarkAdd = () => {
               Please fill out the form below.
             </DialogContentText>
 
-            <form onSubmit={addBookmark}>
-              <TextField label='URL' name='url' onChange={handleUrlChange} margin='normal' fullWidth />
-					    <TextField label='Title'  name='title' onChange={handleTitleChange}  margin='normal' fullWidth />
-              <TextField label='Description' name='desc' onChange={ (e) => setDescription(e.target.value) } multiline margin='normal' fullWidth />
-					    <TextField label='Tags' name='tags' onChange={ (e) => setTags(e.target.value) } margin='normal' fullWidth />
+            <form >
+              <TextField label='URL' name='url' onChange={ (e) => setUrl(e.target.value) } value={url} onBlur = { () => urlInfo() }  margin='normal' fullWidth />
+					    <TextField label='Title'  name='title' onChange={ (e) => setTitle(e.target.value) } value = {title }  margin='normal' fullWidth />
+              <TextField label='Description' name='desc' onChange={ (e) => setDescription(e.target.value) } value={description} multiline margin='normal' fullWidth />
+					    <TextField label='Tags' name='tags' onChange={ (e) => setTags(e.target.value) } value={tags} margin='normal' fullWidth />
 
               <DialogActions>
                 <Button onClick={handleClose} color="primary">
