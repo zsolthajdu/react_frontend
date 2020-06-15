@@ -230,13 +230,13 @@ class BookmarksPanel extends Component< bmProps, {} > {
       this.setState({  bookmarks: [] })
   }
 
-  updateToken() {
-    this.props.updateToken();
-    this.getBookmarks();
-  }
+//  updateToken() {
+//    this.props.updateToken();
+//    this.getBookmarks();
+//  }
 
   refresh() {
-    this.getBookmarks();
+    this.getBookmarks( 50 )
   }
 
   /**
@@ -308,7 +308,7 @@ class BookmarksPanel extends Component< bmProps, {} > {
               }
           />
 
-          <BookmarkAdd refresh = { this.refresh } />
+          <BookmarkAdd refresh = { () => this.refresh } />
           
           <Typography classes={{ root: classes.filterRoot }} >
             Filter: { this.state.searchTag }

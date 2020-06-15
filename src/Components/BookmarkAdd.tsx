@@ -70,14 +70,14 @@ const BookmarkAdd = ( props : addProps ) => {
       tags: tgs
     };
 
-    let django = new Django();
-    let bm = new Bookmarks(django);
+    let django = new Django()
+    let bm = new Bookmarks(django)
 
-    bm.add( e )
-    
-    //props.refresh()
-
-    handleClose()
+    bm.add( e ).then( () => {
+      props.refresh()
+      handleClose()
+    })
+  
   }
 
   // 
